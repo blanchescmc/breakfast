@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>設計思考卡片產生器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f0f4f8;
+    }
+    h1 {
+      color: #333;
+    }
+    .card {
+      font-size: 20px;
+      margin: 20px auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    button {
+      margin-top: 30px;
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎴 設計思考卡片隨機產生器</h1>
+  <div class="card" id="output">
+    請點擊下方按鈕以產生一組設計挑戰！
+  </div>
+  <button onclick="generateCard()">產生卡片</button>
+
+  <script>
+    const objectCards = [
+      "一種可折疊的書桌", "一種自動清潔的掃地拖把", "一種可發光的背包", "一種防水的筆記本電腦包", "一種能提醒喝水的水瓶",
+      "一種具備語音輸出的鉛筆盒", "一種智慧辨識的門鎖", "一種可記錄情緒的手環", "一種結合日曆的電子白板", "一種會變色的雨傘",
+      "一種太陽能充電的手機殼", "一種可凍可熱的保溫便當盒", "一種會自己收納的購物袋", "一種具備計步功能的鞋子", "一種照明功能的帽子",
+      "一種可噴霧消毒的筆", "一種能追蹤定位的鑰匙圈", "一種折疊式的露營燈", "一種帶計時功能的牙刷", "一種具備香氛功能的風扇",
+      "一種能偵測氣味的垃圾桶", "一種可切換溫度的坐墊", "一種可更換模組的筆記本", "一種帶充電功能的椅子", "一種具備聲控功能的鬧鐘",
+      "一種可以發出光芒的運動鞋", "一種有緊急照明的登山杖", "一種能降溫的太陽帽", "一種能播放音樂的書包", "一種可自動灑水的植物盆栽",
+      "一種具備顯示螢幕的水壺", "一種能黏貼在牆上的筆筒", "一種結合計算機的文具盒", "一種抗菌材質的手套", "一種能裝飾桌面的USB風扇",
+      "一種結合濾水功能的雨衣", "一種可懸掛的閱讀燈", "一種可收納文件的抱枕", "一種能顯示心情的徽章", "一種會變形的多功能文具袋"
+    ];
+
+    const characterCards = [
+      "高中生", "老師", "外送員", "獨居老人", "護理師", "警察", "消防員", "運動員", "遊戲實況主", "攝影師",
+      "建築工人", "無家者", "電影導演", "動保志工", "視障者", "小學生", "機師", "家庭主婦", "音樂老師", "設計師",
+      "旅行者", "外交官", "科學家", "程式設計師", "環保志工", "農夫", "司機", "廚師", "偵探", "水電工",
+      "模特兒", "企業家", "導盲犬訓練師", "動畫師", "網紅", "工程師", "觀光導遊", "動畫配音員", "運動教練", "書店店員"
+    ];
+
+    const eventCards = [
+      "地震避難", "水災救援", "野外露營", "校外教學", "考試前準備", "舞台劇演出", "畢業典禮", "電影拍攝現場", "體育競賽", "科學展覽",
+      "創意市集", "節慶活動", "公園淨灘", "室內停電", "購物中心促銷", "地下鐵擁擠", "疫情防控", "緊急撤離演練", "藝術展覽", "跨年倒數",
+      "餐廳排隊", "校園午餐時間", "人群演講活動", "颱風來襲", "生態導覽", "夜市擺攤", "電競比賽", "火災逃生", "環保推廣日", "快閃演出",
+      "宿營夜晚", "寵物領養日", "社區服務日", "醫院急診現場", "機場安檢", "工地施工中", "星象觀測夜", "青年論壇", "圖書館整修", "無人島求生"
+    ];
+
+    const limitationCards = [
+      "必須使用回收材料", "不能用電力", "必須攜帶方便", "限重500克內", "不可使用塑膠", "成本必須低於100元", "可摺疊收納", "不可發出聲音",
+      "防水設計必須", "不可用金屬", "全程需手動操作", "適合兒童使用", "適合高齡者操作", "材料必須天然", "可在夜間使用", "必須為多人共用設計",
+      "室內外皆可用", "零科技元件", "一定要可回收再利用", "必須具有美觀設計", "設計中必須包含布料", "必須可清洗", "只能使用紙製材料", "限時1小時內完成製作",
+      "遇高溫不易損壞", "無需使用雙手", "適合寵物使用", "可自行修復", "不可含有化學物質", "可用於多種語言環境", "必須兼顧隱私", "必須模組化設計",
+      "適合長時間使用", "具有教學功能", "可自動開關", "無需使用說明書", "可拆解並重新組裝", "可在戶外極端天氣下使用", "不可高於30公分", "整體造型需吸睛有趣"
+    ];
+
+    function getRandom(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function generateCard() {
+      const object = getRandom(objectCards);
+      const character = getRandom(characterCards);
+      const event = getRandom(eventCards);
+      const limitation = getRandom(limitationCards);
+
+      document.getElementById("output").innerHTML = `
+        我要設計出「<strong>${object}</strong>」<br>
+        提供給「<strong>${character}</strong>」使用，<br>
+        在「<strong>${event}</strong>」時使用，<br>
+        還要可以「<strong>${limitation}</strong>」。
+      `;
+    }
+  </script>
+</body>
+</html>
